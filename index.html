@@ -24,7 +24,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- BACKGROUND FLOATERS (GLOBAL) --- */
+        /* --- BACKGROUND FLOATERS --- */
         .bg-floaters {
             position: fixed; width: 100%; height: 100%; top: 0; left: 0;
             pointer-events: none; z-index: 0; overflow: hidden;
@@ -88,11 +88,14 @@
         .tap-msg { margin-top: 20px; color: #999; font-size: 0.9rem; animation: blink 1s infinite; }
         @keyframes blink { 50% { opacity: 0.5; } }
 
-        /* --- PAGE 3: SCRATCH --- */
+        /* --- PAGE 3: SCRATCH (Full Scale Update) --- */
         .scratch-box {
             position: relative; width: 300px; height: 300px;
             border: 8px solid white; border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15); overflow: hidden;
+        }
+        .scratch-box img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
         }
 
         /* --- PAGE 4: LIVING ROOM --- */
@@ -103,7 +106,6 @@
             background-size: cover;
             background-position: center;
         }
-        
         .game-hint {
             position: absolute; top: 70px; left: 50%; transform: translateX(-50%);
             background: rgba(255,255,255,0.9); color: var(--accent);
@@ -118,7 +120,6 @@
             z-index: 10; opacity: 0.9; transition: transform 0.2s;
             background: white; padding: 3px; border-radius: 3px; box-shadow: 0 3px 10px rgba(0,0,0,0.2);
         }
-        .hidden-item:hover { transform: scale(1.1); filter: brightness(1.2); }
         .hidden-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 2px; }
 
         .inventory {
@@ -129,7 +130,7 @@
         .inv-slot {
             width: 35px; height: 35px; background: #eee; border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.8rem; color: #ccc; overflow: hidden; transition: 0.3s;
+            font-size: 0.8rem; color: #ccc; overflow: hidden;
         }
         .inv-slot.filled { background: white; border: 2px solid var(--primary); }
         .inv-slot.filled img { width: 100%; height: 100%; object-fit: cover; }
@@ -142,54 +143,37 @@
         }
         .modal-card {
             background: white; padding: 15px 15px 30px 15px;
-            border-radius: 10px; 
-            max-width: 280px; text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            animation: zoomIn 0.3s ease;
+            border-radius: 10px; max-width: 280px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: zoomIn 0.3s ease;
         }
         .modal-card img { width: 100%; border-radius: 3px; margin-bottom: 10px; }
         .btn-keep {
             background: var(--primary); color: white; border: none;
             padding: 10px 25px; border-radius: 30px; font-family: 'Kanit';
             font-size: 1rem; cursor: pointer; margin-top: 15px;
-            box-shadow: 0 5px 10px rgba(255, 92, 138, 0.4);
         }
         @keyframes zoomIn { from { transform: scale(0.5); } to { transform: scale(1); } }
 
         /* --- FINAL MESSAGE --- */
         .final-msg-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.85); 
-            z-index: 200;
+            background: rgba(255,255,255,0.85); z-index: 200;
             display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none;
-            transition: opacity 1.2s ease-out;
-            overflow: hidden;
-        }
-        .final-floaters {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 201; pointer-events: none;
+            opacity: 0; pointer-events: none; transition: opacity 1.2s ease-out;
         }
         .final-msg-box {
-            position: relative; z-index: 205;
-            text-align: center; padding: 40px; box-sizing: border-box;
-            background: white; border-radius: 20px; 
-            box-shadow: 0 15px 40px rgba(255, 92, 138, 0.2);
-            max-width: 80%;
-            transform: scale(0.8) translateY(30px); 
-            opacity: 0;
-            transition: all 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative; z-index: 205; text-align: center; padding: 40px;
+            background: white; border-radius: 20px; box-shadow: 0 15px 40px rgba(255, 92, 138, 0.2);
+            max-width: 80%; transform: scale(0.8); opacity: 0; transition: all 1.5s;
         }
         .final-msg-container.show-final { opacity: 1; pointer-events: auto; }
-        .final-msg-container.show-final .final-msg-box { transform: scale(1) translateY(0); opacity: 1; }
+        .final-msg-container.show-final .final-msg-box { transform: scale(1); opacity: 1; }
         .final-msg-box h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 15px; }
-        .final-msg-box p { font-size: 1.1rem; line-height: 1.7; color: #555; }
     </style>
 </head>
 <body onclick="playAudio()">
 
     <audio id="bgm" loop><source src="song.mp3" type="audio/mpeg"></audio>
-
     <div class="bg-floaters" id="bgFloaters"></div>
 
     <div id="page1" class="page active">
@@ -213,9 +197,8 @@
                 </defs>
                 <path d="M100,180 C20,130 0,80 0,50 C0,20 25,0 55,0 C75,0 90,15 100,30 C110,15 125,0 145,0 C175,0 200,20 200,50 C200,80 180,130 100,180 Z" fill="none" stroke="#ff5c8a" stroke-width="4" />
                 <rect x="0" y="200" width="200" height="200" fill="url(#pinkGrad)" mask="url(#heartMask)" id="waterLevel"></rect>
-                <ellipse cx="60" cy="50" rx="15" ry="10" fill="white" opacity="0.4" transform="rotate(-30 60 50)"/>
             </svg>
-            <div style="position:absolute; top:45%; width:100%; text-align:center; color:#fff; font-weight:bold; text-shadow:0 1px 3px rgba(0,0,0,0.2);"><span id="percent">0%</span></div>
+            <div style="position:absolute; top:45%; width:100%; text-align:center; color:#fff; font-weight:bold;"><span id="percent">0%</span></div>
         </div>
         <p class="tap-msg">👆 จิ้มหัวใจเติมรักให้เต็ม!</p>
     </div>
@@ -223,8 +206,8 @@
     <div id="page3" class="page">
         <h2 style="margin-bottom:20px;">มีความลับซ่อนอยู่...</h2>
         <div class="scratch-box">
-            <img src="photo1.jpg" style="width:100%; height:100%; object-fit:cover;">
-            <canvas id="scratchCanvas" width="300" height="300" style="position:absolute; top:0; left:0; cursor:pointer;"></canvas>
+            <img src="photo1.jpg">
+            <canvas id="scratchCanvas" width="300" height="300" style="position:absolute; top:0; left:0; cursor:pointer; touch-action:none;"></canvas>
         </div>
         <p style="margin-top:15px; color:#888;">ขูดให้สะอาดเลยนะ</p>
     </div>
@@ -246,7 +229,7 @@
     <div class="modal-overlay" id="previewModal">
         <div class="modal-card">
             <img src="" id="previewImg">
-            <p id="previewCaption" style="font-weight:600; color:#555; margin:0; line-height: 1.4;">...</p>
+            <p id="previewCaption" style="font-weight:600; color:#555; margin:0; line-height:1.4; white-space:pre-line;">...</p>
             <button class="btn-keep" onclick="confirmKeep()">เก็บใส่กระเป๋า ❤️</button>
         </div>
     </div>
@@ -255,7 +238,7 @@
         <div class="final-floaters" id="finalFloaters"></div>
         <div class="final-msg-box">
             <h1>อยากบอกว่า…</h1>
-            <p>
+            <p style="font-size:1.1rem; line-height:1.7; color:#555;">
                 อยู่ถ่ายรูปให้ตาแบบนี้ไปนานๆ นะคะ<br>
                 55555555
             </p>
@@ -263,8 +246,7 @@
     </div>
 
     <script>
-        // --- CONFIG ---
-        const startDate = new Date(2025, 10, 15); // 15 พฤศจิกายน 2568 (Month is 0-indexed, 10=Nov)
+        const startDate = new Date(2025, 10, 15); // 15 พ.ย. 2568 (Month index 10)
         const photos = [
             { src: "photo1.jpg", caption: "เจอกันครั้งแรก ทริปแรก ป่าแรก\nปีใหม่ปีแรกที่ออกจากบ้าน\nขอบคุณที่ทำให้ตายิ้มได้ประทับใจมาก" },
             { src: "photo2.jpg", caption: "ดีใจที่ถ่ายรูปให้พี่แล้วมันสวยยยย\n\nขอบคุณที่อบอุ่นและใจดี" },
@@ -278,14 +260,13 @@
             if(!audioPlaying) {
                 document.getElementById('bgm').play().catch(()=>{});
                 audioPlaying = true;
-                const hint = document.querySelector('.music-hint');
-                if(hint) hint.style.display = 'none';
+                if(document.querySelector('.music-hint')) document.querySelector('.music-hint').style.display = 'none';
             }
         }
-        
-        const emojis = ['🌸', '❤️', '💌', '🌹', '✨', '💖'];
+
         function createFloaters(containerId, num) {
             const container = document.getElementById(containerId);
+            const emojis = ['🌸', '❤️', '💌', '🌹', '✨', '💖'];
             for(let i=0; i<num; i++) {
                 let el = document.createElement('div');
                 el.className = 'floater';
@@ -314,21 +295,19 @@
         }
 
         const env = document.getElementById('envelope');
-        env.style.left = "50%"; env.style.top = "40%"; env.style.transform = "translate(-50%, -50%)";
         function moveEnv() {
             const x = Math.random() * (window.innerWidth - 150);
             const y = Math.random() * (window.innerHeight - 150);
-            env.style.transform = "translate(0,0)"; env.style.left = x + 'px'; env.style.top = y + 'px';
+            env.style.left = x + 'px'; env.style.top = y + 'px'; env.style.transform = "translate(0,0)";
         }
         let touches = 0;
         function moveEnvMobile(e) {
             touches++;
             if(touches < 4) { e.preventDefault(); moveEnv(); }
-            else { setTimeout(() => goTo('page2'), 200); }
+            else { goTo('page2'); }
         }
         env.onclick = () => goTo('page2');
 
-        let percent = 0;
         function startTimer() {
             setInterval(() => {
                 const now = new Date();
@@ -340,6 +319,8 @@
                 document.getElementById('timer').innerText = `${days} วัน ${h} ชั่วโมง ${m} นาที ${s} วินาที`;
             }, 1000);
         }
+
+        let percent = 0;
         function fillHeart() {
             percent += 20; if(percent > 100) percent = 100;
             document.getElementById('waterLevel').setAttribute('y', 200 - (200 * (percent/100)));
@@ -357,31 +338,28 @@
                 for(let i=3; i<d.length; i+=4) if(d[i]===0) t++;
                 if(t/(300*300) > 0.6) { c.style.display = 'none'; setTimeout(() => goTo('page4'), 1000); }
             }
-            const down = () => isDrawing=true; const up = () => isDrawing=false;
             const move = (e) => { if(!isDrawing) return; const r = c.getBoundingClientRect(); scratch((e.touches?e.touches[0].clientX:e.clientX)-r.left, (e.touches?e.touches[0].clientY:e.clientY)-r.top); }
-            c.addEventListener('mousedown', down); c.addEventListener('mouseup', up); c.addEventListener('mousemove', move);
-            c.addEventListener('touchstart', (e)=>{down();e.preventDefault()}); c.addEventListener('touchend', up); c.addEventListener('touchmove', move);
+            c.addEventListener('mousedown', () => isDrawing=true); c.addEventListener('mouseup', () => isDrawing=false); c.addEventListener('mousemove', move);
+            c.addEventListener('touchstart', (e) => {isDrawing=true; e.preventDefault();}); c.addEventListener('touchend', () => isDrawing=false); c.addEventListener('touchmove', move);
         }
 
-        let currentPhotoIdx = 0; let currentElement = null; let collected = 0;
+        let curIdx = 0; let curEl = null; let col = 0;
         function foundPhoto(idx, el) {
-            currentPhotoIdx = idx; currentElement = el;
+            curIdx = idx; curEl = el;
             document.getElementById('previewImg').src = photos[idx-1].src;
             document.getElementById('previewCaption').innerText = photos[idx-1].caption;
             document.getElementById('previewModal').style.display = 'flex';
         }
         function confirmKeep() {
             document.getElementById('previewModal').style.display = 'none';
-            currentElement.style.opacity = '0'; currentElement.style.transform = 'scale(0)';
+            curEl.style.opacity = '0'; curEl.style.transform = 'scale(0)';
             setTimeout(() => {
-                const slot = document.getElementById('slot' + currentPhotoIdx);
-                slot.classList.add('filled'); slot.innerHTML = `<img src="${photos[currentPhotoIdx-1].src}">`;
-                collected++;
-                if(collected === 5) {
+                const slot = document.getElementById('slot' + curIdx);
+                slot.classList.add('filled'); slot.innerHTML = `<img src="${photos[curIdx-1].src}">`;
+                col++;
+                if(col === 5) {
                     createFloaters('finalFloaters', 30);
-                    setTimeout(() => {
-                        document.getElementById('finalMsgContainer').classList.add('show-final');
-                    }, 800);
+                    setTimeout(() => document.getElementById('finalMsgContainer').classList.add('show-final'), 800);
                 }
             }, 300);
         }
